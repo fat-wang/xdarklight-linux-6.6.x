@@ -90,7 +90,7 @@ struct meson_drm {
 	struct phy *cvbs_dac;
 	bool cvbs_dac_enabled;
 	struct platform_device *cvbs_dac_pdev;
- 
+
 	struct clk_bulk_data intr_clks[3];
 	unsigned int num_intr_clks;
 	bool intr_clks_enabled;

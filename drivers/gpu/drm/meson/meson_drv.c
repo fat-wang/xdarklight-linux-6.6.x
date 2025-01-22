@@ -223,7 +223,7 @@ static void meson_vpu_init(struct meson_drm *priv)
 			       priv->io_base + _REG(VPU_WRARB_MODE_L2C1));
 	}
 }
- 
+
 static int meson_video_clock_init(struct meson_drm *priv)
 {
 	int ret;
@@ -345,7 +345,7 @@ static int meson_drv_bind_master(struct device *dev, bool has_components)
 	priv->dev = dev;
 	priv->compat = match->compat;
 	priv->afbcd.ops = match->afbcd_ops;
- 
+
 	if (meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8) ||
 	    meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8B) ||
 	    meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8M2)) {
@@ -380,7 +380,7 @@ static int meson_drv_bind_master(struct device *dev, bool has_components)
 
 		ret = devm_clk_bulk_get(dev, VPU_VID_CLK_NUM, priv->vid_clks);
 		if (ret)
-			goto video_clock_exit;
+			goto free_drm;
 	} else {
 		priv->intr_clks[0].id = "vpu_intr";
 		priv->num_intr_clks = 1;
@@ -398,7 +398,7 @@ static int meson_drv_bind_master(struct device *dev, bool has_components)
 	regs = devm_platform_ioremap_resource_byname(pdev, "vpu");
 	if (IS_ERR(regs)) {
 		ret = PTR_ERR(regs);
-		goto free_drm;
+		goto video_clock_exit;
 	}
 
 	priv->io_base = regs;
@@ -424,6 +424,7 @@ static int meson_drv_bind_master(struct device *dev, bool has_components)
 			ret = PTR_ERR(priv->hhi);
 			goto video_clock_exit;
 		}
+	}
 
 	priv->canvas = meson_canvas_get(dev);
 	if (IS_ERR(priv->canvas)) {
@@ -435,24 +436,27 @@ static int meson_drv_bind_master(struct device *dev, bool has_components)
 	if (ret)
 		goto video_clock_exit;
 	ret = meson_canvas_alloc(priv->canvas, &priv->canvas_id_vd1_0);
-	if (ret)
+	if (ret) {
 		meson_canvas_free(priv->canvas, priv->canvas_id_osd1);
 		goto video_clock_exit;
+	}
 	ret = meson_canvas_alloc(priv->canvas, &priv->canvas_id_vd1_1);
-	if (ret)
+	if (ret) {
 		meson_canvas_free(priv->canvas, priv->canvas_id_osd1);
 		meson_canvas_free(priv->canvas, priv->canvas_id_vd1_0);
 		goto video_clock_exit;
+	}
 	ret = meson_canvas_alloc(priv->canvas, &priv->canvas_id_vd1_2);
-	if (ret)
+	if (ret) {
 		meson_canvas_free(priv->canvas, priv->canvas_id_osd1);
 		meson_canvas_free(priv->canvas, priv->canvas_id_vd1_0);
 		meson_canvas_free(priv->canvas, priv->canvas_id_vd1_1);
 		goto video_clock_exit;
+	}
 
 	ret = meson_cvbs_dac_phy_init(priv);
 	if (ret)
-		goto video_clock_exit;
+		goto free_drm;
 
 	priv->vsync_irq = platform_get_irq(pdev, 0);
 
@@ -478,7 +482,7 @@ static int meson_drv_bind_master(struct device *dev, bool has_components)
 
 	ret = drmm_mode_config_init(drm);
 	if (ret)
-		goto goto exit_cvbs_dac_phy;
+		goto exit_cvbs_dac_phy;
 	drm->mode_config.max_width = 3840;
 	drm->mode_config.max_height = 2160;
 	drm->mode_config.funcs = &meson_mode_config_funcs;

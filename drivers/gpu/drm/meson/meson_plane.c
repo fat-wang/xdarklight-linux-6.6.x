@@ -552,7 +552,6 @@ int meson_plane_create(struct meson_drm *priv)
 	unsigned int num_drm_formats;
 	const uint32_t *drm_formats;
 	const uint64_t *format_modifiers = format_modifiers_default;
-	int ret;
 
 	meson_plane = devm_kzalloc(priv->drm->dev, sizeof(*meson_plane),
 				   GFP_KERNEL);
@@ -577,15 +576,11 @@ int meson_plane_create(struct meson_drm *priv)
 		num_drm_formats = ARRAY_SIZE(supported_drm_formats_gx);
 	}
 
-	ret = drm_universal_plane_init(priv->drm, plane, 0xFF,
-					&meson_plane_funcs,
+	drm_universal_plane_init(priv->drm, plane, 0xFF,
+				 &meson_plane_funcs,
 				 drm_formats, num_drm_formats,
-					format_modifiers,
-					DRM_PLANE_TYPE_PRIMARY, "meson_primary_plane");
-	if (ret) {
-		devm_kfree(priv->drm->dev, meson_plane);
-		return ret;
-	}
+				 format_modifiers,
+				 DRM_PLANE_TYPE_PRIMARY, "meson_primary_plane");
 
 	drm_plane_helper_add(plane, &meson_plane_helper_funcs);
 
