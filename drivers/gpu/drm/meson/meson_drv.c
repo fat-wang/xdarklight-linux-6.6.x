@@ -668,6 +668,8 @@ static void meson_drv_shutdown(struct platform_device *pdev)
  * private structure for HHI registers.
  */
 static const struct of_device_id components_dev_match[] = {
+	{ .compatible = "amlogic,meson8-hdmi-tx" },
+	{ .compatible = "amlogic,meson8b-hdmi-tx" },
 	{ .compatible = "amlogic,meson-gxbb-dw-hdmi" },
 	{ .compatible = "amlogic,meson-gxl-dw-hdmi" },
 	{ .compatible = "amlogic,meson-gxm-dw-hdmi" },
