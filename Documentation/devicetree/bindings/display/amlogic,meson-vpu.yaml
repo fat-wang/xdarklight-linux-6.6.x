@@ -66,8 +66,12 @@ properties:
           - const: amlogic,meson-gx-vpu
       - enum:
           - amlogic,meson-g12a-vpu # G12A (S905X2, S905Y2, S905D2)
+          - amlogic,meson8-vpu
+          - amlogic,meson8b-vpu
+          - amlogic,meson8m2-vpu
 
   reg:
+    minItems: 1
     maxItems: 2
 
   reg-names:
@@ -81,6 +85,15 @@ properties:
   amlogic,canvas:
     description: should point to a canvas provider node
     $ref: /schemas/types.yaml#/definitions/phandle
+
+  phys:
+    maxItems: 1
+    description:
+      PHY specifier for the CVBS DAC
+
+  phy-names:
+    items:
+      - const: cvbs-dac
 
   power-domains:
     maxItems: 1
@@ -129,6 +142,9 @@ examples:
         #address-cells = <1>;
         #size-cells = <0>;
         amlogic,canvas = <&canvas>;
+
+        phys = <&cvbs_dac_phy>;
+        phy-names = "cvbs-dac";
 
         /* CVBS VDAC output port */
         port@0 {
