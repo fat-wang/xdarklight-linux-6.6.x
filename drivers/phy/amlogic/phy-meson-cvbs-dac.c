@@ -44,7 +44,7 @@ struct phy_meson_cvbs_dac_data {
 	u8			cdac_ctrl_resv2_enable_val;
 	u8			cdac_vref_adj_enable_val;
 	u8			cdac_rl_adj_enable_val;
-	u8			cdac_pwd_disable_val;
+	bool			disable_ignore_cdac_pwd;
 	bool			needs_cvbs_trimming_nvmem_cell;
 };
 
@@ -89,7 +89,7 @@ static const struct phy_meson_cvbs_dac_data phy_meson8_cvbs_dac_data = {
 	.cdac_ctrl_resv2_enable_val	= 0x0,
 	.cdac_vref_adj_enable_val	= 0x0,
 	.cdac_rl_adj_enable_val		= 0x0,
-	.cdac_pwd_disable_val		= 0x1,
+	.disable_ignore_cdac_pwd	= false,
 	.needs_cvbs_trimming_nvmem_cell	= true,
 };
 
@@ -98,7 +98,7 @@ static const struct phy_meson_cvbs_dac_data phy_meson_gxbb_cvbs_dac_data = {
 	.cdac_ctrl_resv2_enable_val	= 0x0,
 	.cdac_vref_adj_enable_val	= 0x0,
 	.cdac_rl_adj_enable_val		= 0x0,
-	.cdac_pwd_disable_val		= 0x1,
+	.disable_ignore_cdac_pwd	= false,
 	.needs_cvbs_trimming_nvmem_cell	= false,
 };
 
@@ -107,7 +107,7 @@ static const struct phy_meson_cvbs_dac_data phy_meson_gxl_cvbs_dac_data = {
 	.cdac_ctrl_resv2_enable_val	= 0x0,
 	.cdac_vref_adj_enable_val	= 0xf,
 	.cdac_rl_adj_enable_val		= 0x0,
-	.cdac_pwd_disable_val		= 0x1,
+	.disable_ignore_cdac_pwd	= false,
 	.needs_cvbs_trimming_nvmem_cell	= false,
 };
 
@@ -116,7 +116,7 @@ static const struct phy_meson_cvbs_dac_data phy_meson_g12a_cvbs_dac_data = {
 	.cdac_ctrl_resv2_enable_val	= 0x60,
 	.cdac_vref_adj_enable_val	= 0x10,
 	.cdac_rl_adj_enable_val		= 0x4,
-	.cdac_pwd_disable_val		= 0x0,
+	.disable_ignore_cdac_pwd	= true,
 	.needs_cvbs_trimming_nvmem_cell	= false,
 };
 
@@ -147,8 +147,11 @@ static int phy_meson_cvbs_dac_power_off(struct phy *phy)
 	regmap_field_write(priv->regs[MESON_CDAC_VREF_ADJ], 0x0);
 	regmap_field_write(priv->regs[MESON_CDAC_RL_ADJ], 0x0);
 	regmap_field_write(priv->regs[MESON_CDAC_GSW], 0x0);
-	regmap_field_write(priv->regs[MESON_CDAC_PWD],
-			   priv->data->cdac_pwd_disable_val);
+
+	if (priv->data->disable_ignore_cdac_pwd)
+		regmap_field_write(priv->regs[MESON_CDAC_PWD], 0x0);
+	else
+		regmap_field_write(priv->regs[MESON_CDAC_PWD], 0x1);
 
 	return 0;
 }
