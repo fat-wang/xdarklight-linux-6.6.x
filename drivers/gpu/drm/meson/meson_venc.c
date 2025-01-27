@@ -1959,7 +1959,7 @@ void meson_venc_enable_vsync(struct meson_drm *priv)
 			int ret;
 
 			ret = clk_bulk_enable(priv->num_intr_clks,
-					      priv->intr_clks);
+						priv->intr_clks);
 			if (ret)
 				dev_err(priv->dev,
 					"Failed to enable the interrupt clocks\n");

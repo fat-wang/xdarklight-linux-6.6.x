@@ -449,8 +449,8 @@ void meson_viu_init(struct meson_drm *priv)
 	writel_relaxed(reg, priv->io_base + _REG(VIU_OSD2_FIFO_CTRL_STAT));
 
 	if (!meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8) &&
-	    !meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8B) &&
-	    !meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8M2)) {
+		!meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8B) &&
+		!meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8M2)) {
 		/* Set OSD alpha replace value */
 		writel_bits_relaxed(0xff << OSD_REPLACE_SHIFT,
 				    0xff << OSD_REPLACE_SHIFT,

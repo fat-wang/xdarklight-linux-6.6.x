@@ -22,7 +22,6 @@
 #include <drm/drm_bridge.h>
 #include <drm/drm_connector.h>
 #include <drm/drm_device.h>
-#include <drm/drm_edid.h>
 #include <drm/drm_probe_helper.h>
 #include <drm/drm_print.h>
 
@@ -1219,7 +1218,8 @@ static int meson_txc_hdmi_hdmi_codec_hw_params(struct device *dev, void *data,
 		if (hparms->channels > 2)
 			audio_tx_format |= TX_AUDIO_FORMAT_I2S_2_OR_8_CH;
 
-		regmap_write(priv->regmap, TX_AUDIO_FORMAT, audio_tx_format);
+		regmap_write(priv->regmap, TX_AUDIO_FORMAT,
+			     audio_tx_format);
 
 		regmap_write(priv->regmap, TX_AUDIO_I2S, TX_AUDIO_I2S_ENABLE);
 		regmap_write(priv->regmap, TX_AUDIO_SPDIF, 0x0);
@@ -1232,7 +1232,8 @@ static int meson_txc_hdmi_hdmi_codec_hw_params(struct device *dev, void *data,
 		if (hparms->cea.coding_type == HDMI_AUDIO_CODING_TYPE_STREAM)
 			audio_tx_format |= TX_AUDIO_FORMAT_SPDIF_CHANNEL_STATUS_FROM_DATA_OR_REG;
 
-		regmap_write(priv->regmap, TX_AUDIO_FORMAT, audio_tx_format);
+		regmap_write(priv->regmap, TX_AUDIO_FORMAT,
+			     audio_tx_format);
 
 		regmap_write(priv->regmap, TX_AUDIO_I2S, 0x0);
 		regmap_write(priv->regmap, TX_AUDIO_SPDIF, TX_AUDIO_SPDIF_ENABLE);
@@ -1439,9 +1440,10 @@ static int meson_txc_hdmi_hdmi_codec_init(struct meson_txc_hdmi *priv)
 	return PTR_ERR_OR_ZERO(priv->hdmi_codec_pdev);
 }
 
-static int meson_txc_hdmi_probe(struct platform_device *pdev)
+static int meson_txc_hdmi_bind(struct device *dev, struct device *master,
+			       void *data)
 {
-	struct device *dev = &pdev->dev;
+	struct platform_device *pdev = to_platform_device(dev);
 	struct meson_txc_hdmi *priv;
 	void __iomem *base;
 	u32 regval;
@@ -1455,7 +1457,7 @@ static int meson_txc_hdmi_probe(struct platform_device *pdev)
 
 	mutex_init(&priv->codec_mutex);
 
-	platform_set_drvdata(pdev, priv);
+	dev_set_drvdata(dev, priv);
 
 	base = devm_platform_ioremap_resource(pdev, 0);
 	if (IS_ERR(base))
@@ -1524,9 +1526,10 @@ err_disable_clk:
 	return ret;
 }
 
-static void meson_txc_hdmi_remove(struct platform_device *pdev)
+static void meson_txc_hdmi_unbind(struct device *dev, struct device *master,
+				  void *data)
 {
-	struct meson_txc_hdmi *priv = platform_get_drvdata(pdev);
+	struct meson_txc_hdmi *priv = dev_get_drvdata(dev);
 
 	platform_device_unregister(priv->hdmi_codec_pdev);
 
@@ -1535,6 +1538,23 @@ static void meson_txc_hdmi_remove(struct platform_device *pdev)
 	meson_txc_hdmi_hw_exit(priv);
 
 	clk_disable_unprepare(priv->pclk);
+}
+
+static const struct component_ops meson_txc_hdmi_component_ops = {
+	.bind = meson_txc_hdmi_bind,
+	.unbind = meson_txc_hdmi_unbind,
+};
+
+static int meson_txc_hdmi_probe(struct platform_device *pdev)
+{
+	return component_add(&pdev->dev, &meson_txc_hdmi_component_ops);
+}
+
+static int meson_txc_hdmi_remove(struct platform_device *pdev)
+{
+	component_del(&pdev->dev, &meson_txc_hdmi_component_ops);
+
+	return 0;
 }
 
 static const struct of_device_id meson_txc_hdmi_of_table[] = {
@@ -1546,7 +1566,7 @@ MODULE_DEVICE_TABLE(of, meson_txc_hdmi_of_table);
 
 static struct platform_driver meson_txc_hdmi_platform_driver = {
 	.probe		= meson_txc_hdmi_probe,
-	.remove_new	= meson_txc_hdmi_remove,
+	.remove		= meson_txc_hdmi_remove,
 	.driver		= {
 		.name		= "meson-transwitch-hdmi",
 		.of_match_table	= meson_txc_hdmi_of_table,

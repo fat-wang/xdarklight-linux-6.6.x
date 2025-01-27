@@ -512,7 +512,7 @@ static int meson_drv_bind_master(struct device *dev, bool has_components)
 			dev_err(drm->dev, "Couldn't bind all components\n");
 			/* Do not try to unbind */
 			has_components = false;
-			goto exit_cvbs_dac_phy;
+			goto exit_afbcd;
 		}
 	}
 
