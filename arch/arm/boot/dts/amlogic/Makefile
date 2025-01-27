@@ -16,7 +16,6 @@ dtb-$(CONFIG_MACH_MESON8) += \
 	meson8b-onecloud-oc-v14.dtb \
 	meson8b-onecloud-oc-v15.dtb \
 	meson8b-onecloud-otg.dtb \
-	meson8b-onecloud-role-switch.dtb \
 	meson8m2-m8s.dtb \
 	meson8m2-mxiii.dtb \
 	meson8m2-mxiii-plus.dtb \
