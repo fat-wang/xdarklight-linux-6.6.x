@@ -516,8 +516,6 @@
 	sram = <&ao_arc_sram>;
 	resets = <&reset RESET_MEDIA_CPU>;
 	clocks = <&clkc CLKID_AO_MEDIA_CPU>;
-	status = "okay";
-	firmware-name = "zephyr.elf";
 };
 
 &cbus {

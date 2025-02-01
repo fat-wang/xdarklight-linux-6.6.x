@@ -7,7 +7,6 @@
 /dts-v1/;
 #include "meson8b.dtsi"
 #include <dt-bindings/gpio/gpio.h>
-#include <dt-bindings/net/realtek-rtl8211f.h>
 
 / {
 	model = "Hardkernel ODROID-C1";
@@ -135,20 +134,6 @@
 				sound-dai = <&hdmi_tx 0>;
 			};
 		};
-	};
-
-	usb0_vbus: regulator-usb0-vbus {
-		/* Richtek RT9715EGB */
-		compatible = "regulator-fixed";
-
-		regulator-name = "USB0_VBUS";
-		regulator-min-microvolt = <5000000>;
-		regulator-max-microvolt = <5000000>;
-
-		vin-supply = <&p5v0>;
-
-		gpio = <&gpio_ao GPIOAO_5 GPIO_ACTIVE_HIGH>;
-		enable-active-high;
 	};
 
 	vcc_1v8: regulator-vcc-1v8 {
@@ -287,13 +272,6 @@
 			interrupt-parent = <&gpio_intc>;
 			/* GPIOH_3 */
 			interrupts = <17 IRQ_TYPE_LEVEL_LOW>;
-
-			/* absent */
-			realtek,led-0-mode = <0>;
-			/* green */
-			realtek,led-1-mode = <(RTL8211F_LED_LINK_100 | RTL8211F_LED_ACTIVITY | RTL8211F_LED_EEE)>;
-			/* amber */
-			realtek,led-2-mode = <(RTL8211F_LED_LINK_1000 | RTL8211F_LED_ACTIVITY | RTL8211F_LED_EEE)>;
 		};
 	};
 };
@@ -444,18 +422,8 @@
 	pinctrl-names = "default";
 };
 
-&usb0 {
+&usb1_phy {
 	status = "okay";
-
-	dr_mode = "otg";
-	usb-role-switch;
-
-	connector {
-		compatible = "gpio-usb-b-connector", "usb-b-connector";
-		type = "micro";
-		id-gpios = <&usb0_phy 0 GPIO_ACTIVE_HIGH>;
-		vbus-supply = <&usb0_vbus>;
-	};
 };
 
 &usb1 {
@@ -471,12 +439,4 @@
 		vdd-supply = <&p5v0>;
 		reset-gpio = <&gpio_ao GPIOAO_4 GPIO_ACTIVE_LOW>;
 	};
-};
-
-&usb0_phy {
-	status = "okay";
-};
-
-&usb1_phy {
-	status = "okay";
 };

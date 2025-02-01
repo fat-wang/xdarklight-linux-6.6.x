@@ -733,8 +733,8 @@ meson_vclk_dmt_supported_freq(struct meson_drm *priv, unsigned int freq)
 	}
 
 	if (meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8) ||
-		meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8B) ||
-		meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8M2))
+	    meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8B) ||
+	    meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8M2))
 		return MODE_OK;
 
 	if (meson_hdmi_pll_find_params(priv, freq, &m, &frac, &od))
@@ -790,8 +790,8 @@ meson_vclk_vic_supported_freq(struct meson_drm *priv, unsigned int phy_freq,
 	}
 
 	if (meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8) ||
-		meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8B) ||
-		meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8M2))
+	    meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8B) ||
+	    meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8M2))
 		return MODE_OK;
 
 	for (i = 0 ; params[i].pixel_freq ; ++i) {
@@ -1167,8 +1167,8 @@ void meson_vclk_setup(struct meson_drm *priv, unsigned int target,
 	unsigned int venc_div;
 
 	if (meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8) ||
-		meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8B) ||
-		meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8M2)) {
+	    meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8B) ||
+	    meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8M2)) {
 		/* CVBS video clocks are generated off a 1296MHz base clock */
 		if (target == MESON_VCLK_TARGET_CVBS)
 			phy_freq = 1296000;

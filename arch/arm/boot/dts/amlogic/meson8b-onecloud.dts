@@ -8,7 +8,6 @@
 #include "meson8b.dtsi"
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/input/input.h>
-#include <dt-bindings/net/realtek-rtl8211f.h>
 
 / {
 	model = "Xunlei OneCloud";
@@ -60,8 +59,8 @@
 			label = "onecloud:red:alive";
 			gpios = <&gpio_ao GPIOAO_2 GPIO_ACTIVE_HIGH>;
 
-			default-state = "off";
-			linux,default-trigger = "mmc1";
+			default-state = "on";
+			linux,default-trigger = "default-on";
 		};
 
 		green {
@@ -69,19 +68,18 @@
 			gpios = <&gpio_ao GPIOAO_3 GPIO_ACTIVE_HIGH>;
 
 			default-state = "off";
-			// linux,default-trigger = "mmc0";
-			linux,default-trigger = "usb-host";
+			linux,default-trigger = "mmc1";
 		};
 
 		blue {
 			label = "onecloud:blue:alive";
 			gpios = <&gpio_ao GPIOAO_4 GPIO_ACTIVE_HIGH>;
 
-			default-state = "on";
-			linux,default-trigger = "default-on";
+			default-state = "off";
+			linux,default-trigger = "usb-host";
 		};
 	};
-	
+
 	hdmi-connector {
 		compatible = "hdmi-connector";
 		type = "a";
@@ -123,7 +121,6 @@
 			};
 		};
 	};
-
 
 	p12v: regulator-p12v {
 		compatible = "regulator-fixed";
@@ -207,8 +204,7 @@
 		pwms = <&pwm_cd 1 12001 0>;	// PWM_D
 		pwm-dutycycle-range = <10 0>;
 		regulator-min-microvolt = <860000>;
-		// regulator-max-microvolt = <1140000>;
-		regulator-max-microvolt = <1500000>;
+		regulator-max-microvolt = <1140000>;
 
 		pwm-supply = <&p12v>;
 
@@ -430,20 +426,12 @@
 
 			interrupt-parent = <&gpio_intc>;
 			interrupts = <17 IRQ_TYPE_LEVEL_LOW>; // GPIOH 3
-
-			/* absent */
-			realtek,led-0-mode = <(RTL8211F_LED_LINK_10 | RTL8211F_LED_LINK_100 |RTL8211F_LED_ACTIVITY | RTL8211F_LED_EEE)>;
-			/* green */
-			realtek,led-1-mode = <(RTL8211F_LED_LINK_10 | RTL8211F_LED_LINK_100 | RTL8211F_LED_LINK_1000 | RTL8211F_LED_EEE)>;
-			/* amber */
-			realtek,led-2-mode = <(RTL8211F_LED_LINK_1000 |RTL8211F_LED_ACTIVITY | RTL8211F_LED_EEE)>;
 		};
 	};
 };
 
 &usb0 {
 	status = "okay";
-	// dr_mode = "host";
 	dr_mode = "otg";
 	usb-role-switch;
 	role-switch-default-mode = "host";
@@ -472,7 +460,6 @@
 		remote-endpoint = <&hdmi_connector_in>;
 	};
 };
-
 
 &ir_receiver {
 	status = "okay";

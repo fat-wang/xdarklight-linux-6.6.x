@@ -202,9 +202,9 @@ static void meson_plane_atomic_update(struct drm_plane *plane,
 
 	/* On GXBB and earlier, Use the old non-HDR RGB2YUV converter */
 	if (meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8) ||
-		meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8B) ||
-		meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8M2) ||
-		meson_vpu_is_compatible(priv, VPU_COMPATIBLE_GXBB))
+	    meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8B) ||
+	    meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8M2) ||
+	    meson_vpu_is_compatible(priv, VPU_COMPATIBLE_GXBB))
 		priv->viu.osd1_blk0_cfg[0] |= OSD_OUTPUT_COLOR_RGB;
 
 	if (priv->viu.osd1_afbcd &&
@@ -579,7 +579,7 @@ int meson_plane_create(struct meson_drm *priv)
 
 	ret = drm_universal_plane_init(priv->drm, plane, 0xFF,
 					&meson_plane_funcs,
-					drm_formats, num_drm_formats,
+				 drm_formats, num_drm_formats,
 					format_modifiers,
 					DRM_PLANE_TYPE_PRIMARY, "meson_primary_plane");
 	if (ret) {

@@ -193,14 +193,6 @@
 			reg = <0x4f00000 0x100000>;
 			no-map;
 		};
-
-		linux,cma {
-			compatible = "shared-dma-pool";
-			reusable;
-			size = <0x10000000>;
-			alignment = <0x400000>;
-			linux,cma-default;
-		};
 	};
 
 	thermal-zones {
@@ -354,17 +346,6 @@
 			hdmi_tx_tmds_port: port@1 {
 				reg = <1>;
 			};
-		};
-
-		nfc: nand-controller@48600 {
-			compatible = "amlogic,meson8-nfc";
-			reg = <0x48600 0x24>;
-			interrupts = <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>;
-			#address-cells = <1>;
-			#size-cells = <0>;
-			clocks = <&clkc CLKID_NAND>, <&clkc CLKID_NAND_CLK>;
-			clock-names = "core", "nand";
-			status = "disabled";
 		};
 
 		vpu: vpu@100000 {
@@ -638,20 +619,6 @@
 			};
 		};
 
-		pwm_c_dv9_pins: pwm-c-dv9 {
-			mux {
-				groups = "pwm_c_dv9";
-				function = "pwm_c";
-			};
-		};
-
-		pwm_d_pins: pwm-d {
-			mux {
-				groups = "pwm_d";
-				function = "pwm_d";
-			};
-		};
-
 		sd_a_pins: sd-a {
 			mux {
 				groups = "sd_d0_a", "sd_d1_a", "sd_d2_a",
@@ -722,35 +689,6 @@
 					 "eth_mdc";
 				function = "ethernet";
 				bias-disable;
-			};
-		};
-
-		nand_pins: nand {
-			mux {
-				groups = "nand_io",
-					"nand_ale",
-					"nand_cle",
-					"nand_wen_clk",
-					"nand_ren_clk",
-					"nand_dqs";
-				function = "nand";
-				bias-pull-down;
-			};
-		};
-
-		nand_ce0_pins: nand-ce0 {
-			mux {
-				groups = "nand_io_ce0";
-				function = "nand";
-				bias-pull-up;
-			};
-		};
-
-		nand_rb0_pins: nand-rb0 {
-			mux {
-				groups = "nand_io_rb0";
-				function = "nand";
-				bias-pull-up;
 			};
 		};
 
@@ -830,8 +768,8 @@
 };
 
 &ethmac {
-	clocks = <&clkc CLKID_ETH>, <&clkc CLKID_ETH_CLK>;
-	clock-names = "stmmaceth", "ethernet";
+	clocks = <&clkc CLKID_ETH>;
+	clock-names = "stmmaceth";
 
 	power-domains = <&pwrc PWRC_MESON8_ETHERNET_MEM_ID>;
 };

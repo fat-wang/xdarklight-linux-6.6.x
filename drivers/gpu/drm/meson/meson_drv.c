@@ -424,7 +424,7 @@ static int meson_drv_bind_master(struct device *dev, bool has_components)
 			ret = PTR_ERR(priv->hhi);
 			goto video_clock_exit;
 		}
-	}
+ 	}
 
 	priv->canvas = meson_canvas_get(dev);
 	if (IS_ERR(priv->canvas)) {
@@ -436,10 +436,8 @@ static int meson_drv_bind_master(struct device *dev, bool has_components)
 	if (ret)
 		goto video_clock_exit;
 	ret = meson_canvas_alloc(priv->canvas, &priv->canvas_id_vd1_0);
-	if (ret) {
-		meson_canvas_free(priv->canvas, priv->canvas_id_osd1);
+	if (ret)
 		goto video_clock_exit;
-	}
 	ret = meson_canvas_alloc(priv->canvas, &priv->canvas_id_vd1_1);
 	if (ret) {
 		meson_canvas_free(priv->canvas, priv->canvas_id_osd1);

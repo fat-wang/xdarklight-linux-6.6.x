@@ -218,8 +218,8 @@ static void meson_encoder_hdmi_atomic_enable(struct drm_bridge *bridge,
 	dev_dbg(priv->dev, "\"%s\" vic %d\n", mode->name, vic);
 
 	if (meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8) ||
-		meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8B) ||
-		meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8M2)) {
+	    meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8B) ||
+	    meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8M2)) {
 		if (encoder_hdmi->output_bus_fmt == MEDIA_BUS_FMT_RGB888_1X24)
 			ycrcb_map = VPU_HDMI_OUTPUT_YCBCR;
 		else
@@ -237,8 +237,8 @@ static void meson_encoder_hdmi_atomic_enable(struct drm_bridge *bridge,
 	meson_encoder_hdmi_set_vclk(encoder_hdmi, mode);
 
 	if (!meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8) &&
-		!meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8B) &&
-		!meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8M2)) {
+	    !meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8B) &&
+	    !meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8M2)) {
 		if (encoder_hdmi->output_bus_fmt == MEDIA_BUS_FMT_UYYVYY8_0_5X24)
 			/* Setup YUV420 to HDMI-TX, no 10bit diphering */
 			writel_relaxed(2 | (2 << 2),
@@ -300,8 +300,8 @@ meson_encoder_hdmi_get_inp_bus_fmts(struct drm_bridge *bridge,
 	int i;
 
 	if (meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8) ||
-		meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8B) ||
-		meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8M2)) {
+	    meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8B) ||
+	    meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8M2)) {
 		num_out_bus_fmts = ARRAY_SIZE(meson8_encoder_hdmi_out_bus_fmts);
 		out_bus_fmts = meson8_encoder_hdmi_out_bus_fmts;
 	} else {
@@ -467,8 +467,8 @@ int meson_encoder_hdmi_init(struct meson_drm *priv)
 	drm_connector_attach_max_bpc_property(meson_encoder_hdmi->connector, 8, 8);
 
 	if (!meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8) &&
-		!meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8B) &&
-		!meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8M2))
+	    !meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8B) &&
+	    !meson_vpu_is_compatible(priv, VPU_COMPATIBLE_M8M2))
 		/* Handle this here until handled by drm_bridge_connector_init() */
 		meson_encoder_hdmi->connector->ycbcr_420_allowed = true;
 
